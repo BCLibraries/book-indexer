@@ -1,0 +1,23 @@
+{
+  "name": "bclib/get-books-from-alma",
+  "type": "project",
+  "require": {
+    "guzzlehttp/guzzle": "^7.0",
+    "caseyamcl/phpoaipmh": "^3.0",
+    "symfony/cache": "^5.3",
+    "ext-simplexml": "*",
+    "symfony/http-client": "^5.3"
+  },
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Bclib\\GetBooksFromAlma\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Ben Florin",
+      "email": "benjamin.florin@bc.edu"
+    }
+  ]
+}
