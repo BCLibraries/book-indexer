@@ -2,6 +2,15 @@
 
 namespace Bclib\GetBooksFromAlma;
 
+use Bclib\GetBooksFromAlma\Models\Author;
+use Bclib\GetBooksFromAlma\Models\Datafield;
+use Bclib\GetBooksFromAlma\Models\Item;
+use Bclib\GetBooksFromAlma\Models\MarcFieldRange;
+use Bclib\GetBooksFromAlma\Models\Record;
+use Bclib\GetBooksFromAlma\Models\Subject;
+use Bclib\GetBooksFromAlma\Models\Tag;
+use Bclib\GetBooksFromAlma\Models\Title;
+
 class MARCRecordTranslator
 {
     private LocationRepository $locations;

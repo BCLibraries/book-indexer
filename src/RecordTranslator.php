@@ -2,6 +2,11 @@
 
 namespace Bclib\GetBooksFromAlma;
 
+use Bclib\GetBooksFromAlma\Models\Datafield;
+use Bclib\GetBooksFromAlma\Models\Record;
+use Bclib\GetBooksFromAlma\Models\Subfield;
+use Bclib\GetBooksFromAlma\Models\Tag;
+
 class RecordTranslator
 {
     public function build(\SimpleXMLElement $record_xml): Record
@@ -24,6 +29,7 @@ class RecordTranslator
     /**
      * @param \SimpleXMLElement $datafield_xml
      * @return Datafield
+     * @throws Exceptions\BadTagException
      */
     private function buildDatafield(\SimpleXMLElement $datafield_xml): Datafield
     {

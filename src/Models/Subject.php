@@ -1,6 +1,6 @@
 <?php
 
-namespace Bclib\GetBooksFromAlma;
+namespace Bclib\GetBooksFromAlma\Models;
 
 class Subject
 {

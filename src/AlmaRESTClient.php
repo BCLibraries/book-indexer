@@ -2,6 +2,8 @@
 
 namespace Bclib\GetBooksFromAlma;
 
+use Bclib\GetBooksFromAlma\Models\Library;
+use Bclib\GetBooksFromAlma\Models\Location;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\Exception as HTTPClientException;
 

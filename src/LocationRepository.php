@@ -2,6 +2,8 @@
 
 namespace Bclib\GetBooksFromAlma;
 
+use Bclib\GetBooksFromAlma\Models\Location;
+
 class LocationRepository
 {
     /** @var Location[][] */
