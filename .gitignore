@@ -202,3 +202,6 @@ fabric.properties
 # Project stuff
 untracked
 cache
+
+# PHPUnit caches
+.phpunit.result.cache
