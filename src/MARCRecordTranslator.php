@@ -14,10 +14,12 @@ use Bclib\GetBooksFromAlma\Models\Title;
 class MARCRecordTranslator
 {
     private LocationRepository $locations;
+    private TagRepository $tags;
 
-    public function __construct(LocationRepository $locations)
+    public function __construct(LocationRepository $locations, TagRepository $tags)
     {
         $this->locations = $locations;
+        $this->tags = $tags;
     }
 
     public function build(Record $record): Item
@@ -34,46 +36,14 @@ class MARCRecordTranslator
 
     private function addTitles(Record $record, Item $item)
     {
-        $title_statements = $record->getDatafieldsByTag(new Tag('245'));
-        $varying_form_title_statements = $record->getDatafieldsByTag(new Tag('246'));
-        $uniform_title_statements_1 = $record->getDatafieldsByTag(new Tag('130'));
-        $uniform_title_statements_2 = $record->getDatafieldsByTag(new Tag('240'));
-        $all_title_statements = array_merge(
-            $title_statements,
-            $varying_form_title_statements,
-            $uniform_title_statements_1,
-            $uniform_title_statements_2
-        );
-
-        foreach ($all_title_statements as $title_statement) {
-            $this->addTitle($title_statement, $item);
-        }
+        $this->addFieldType($record, $item, $this->tags->getTitleTags(), 'addTitle');
     }
 
     private function addAuthors(Record $record, Item $item)
     {
-        // Add personal name authors.
-        $main_entry_fields = $record->getDatafieldsByTag(new Tag('100'));
-        $added_entry_fields = $record->getDatafieldsByTag(new Tag('700'));
-        $all_personal_name_fields = array_merge($main_entry_fields, $added_entry_fields);
-        foreach ($all_personal_name_fields as $main_entry_field) {
-            $this->addPersonalNameAuthor($main_entry_field, $item);
-        }
-
-        // Add corporate name authors.
-        $main_entry_fields = $record->getDatafieldsByTag(new Tag('110'));
-        $added_entry_fields = $record->getDatafieldsByTag(new Tag('710'));
-        $all_corporate_name_fields = array_merge($main_entry_fields, $added_entry_fields);
-        foreach ($all_corporate_name_fields as $corp_main_entry_field) {
-            $this->addCorporateNameAuthor($corp_main_entry_field, $item);
-        }
-
-        // Add conference/meeting name authors.
-        $main_entry_fields = $record->getDatafieldsByTag(new Tag('111'));
-        $all_conference_name_fields = array_merge($main_entry_fields, $added_entry_fields);
-        foreach ($all_conference_name_fields as $conference_name_field) {
-            $this->addConferenceNameAuthor($conference_name_field, $item);
-        }
+        $this->addFieldType($record, $item, $this->tags->getPersonalNameTags(), 'addPersonalNameAuthor');
+        $this->addFieldType($record, $item, $this->tags->getCorporateNameTags(), 'addCorporateNameAuthor');
+        $this->addFieldType($record, $item, $this->tags->getConferenceNameTags(), 'addConferenceNameAuthor');
     }
 
     private function addSubjects(Record $record, Item $item): void
@@ -146,11 +116,6 @@ class MARCRecordTranslator
         }
     }
 
-    private function addLibraryAndLocation(Datafield $location_field)
-    {
-
-    }
-
     /**
      * @param Datafield $entry_field
      * @param array $subfield_codes
@@ -166,5 +131,20 @@ class MARCRecordTranslator
         }
 
         return implode(' ', $string_parts);
+    }
+
+    /**
+     * @param Record $record
+     * @param Item $item
+     * @param Tag[] $tags
+     * @param string $add_method
+     */
+    private function addFieldType(Record $record, Item $item, array $tags, string $add_method)
+    {
+        foreach ($tags as $tag) {
+            foreach ($record->getDatafieldsByTag($tag) as $datafield) {
+                $this->{$add_method}($datafield, $item);
+            }
+        }
     }
 }

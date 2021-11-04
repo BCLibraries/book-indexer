@@ -97,6 +97,66 @@ test('intersect() returns false when intervals do not intersect at all', functio
     expect($interval_1->intersect($interval_2))->toBeFalse();
 });
 
+test('merge() creates merged interval when merging higher interval', function() {
+    $callno_1 = new CallNumber('AB 500');
+    $callno_2 = new CallNumber('BC 100');
+    $interval_1 = new CallNumberInterval($callno_1, $callno_2);
+
+    $callno_3 = new CallNumber('DE 500');
+    $callno_4 = new CallNumber('FG 100');
+    $interval_2 = new CallNumberInterval($callno_3, $callno_4);
+
+    expect($interval_1->merge($interval_2))->toEqual(new CallNumberInterval($callno_1, $callno_4));
+});
+
+test('merge() creates merged interval when merging lower interval', function() {
+    $callno_1 = new CallNumber('DE 500');
+    $callno_2 = new CallNumber('FG 100');
+    $interval_1 = new CallNumberInterval($callno_1, $callno_2);
+
+    $callno_3 = new CallNumber('AB 500');
+    $callno_4 = new CallNumber('BC 100');
+    $interval_2 = new CallNumberInterval($callno_3, $callno_4);
+
+    expect($interval_1->merge($interval_2))->toEqual(new CallNumberInterval($callno_3, $callno_2));
+});
+
+test('merge() creates merged interval when merging intersecting interval', function() {
+    $callno_1 = new CallNumber('AB 500');
+    $callno_2 = new CallNumber('DE 500');
+    $interval_1 = new CallNumberInterval($callno_1, $callno_2);
+
+    $callno_3 = new CallNumber('BC 100');
+    $callno_4 = new CallNumber('FG 100');
+    $interval_2 = new CallNumberInterval($callno_3, $callno_4);
+
+    expect($interval_1->merge($interval_2))->toEqual(new CallNumberInterval($callno_1, $callno_4));
+});
+
+test('merge() creates merged interval when merging contained interval', function() {
+    $callno_1 = new CallNumber('AB 500');
+    $callno_2 = new CallNumber('FG 100');
+    $interval_1 = new CallNumberInterval($callno_1, $callno_2);
+
+    $callno_3 = new CallNumber('BC 100');
+    $callno_4 = new CallNumber('DE 500');
+    $interval_2 = new CallNumberInterval($callno_3, $callno_4);
+
+    expect($interval_1->merge($interval_2))->toEqual(new CallNumberInterval($callno_1, $callno_2));
+});
+
+test('merge() creates merged interval when merging wrapping interval', function() {
+    $callno_1 = new CallNumber('BC 100');
+    $callno_2 = new CallNumber('DE 500');
+    $interval_1 = new CallNumberInterval($callno_1, $callno_2);
+
+    $callno_3 = new CallNumber('AB 500');
+    $callno_4 = new CallNumber('FG 100');
+    $interval_2 = new CallNumberInterval($callno_3, $callno_4);
+
+    expect($interval_1->merge($interval_2))->toEqual(new CallNumberInterval($callno_3, $callno_4));
+});
+
 test('::fromArray() builds interval correctly', function () {
     $callno_lo = new CallNumber('AB 500');
     $callno_hi = new CallNumber('BC 100');
